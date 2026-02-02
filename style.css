@@ -105,6 +105,7 @@ body::before {
   grid-template-columns: 300px 1fr 180px;
   gap: 1rem;
   height: 100vh;
+  min-height: 100dvh;
 }
 
 .column {
@@ -350,6 +351,7 @@ body::before {
   .grid-main {
     grid-template-columns: 1fr;
     height: auto;
+    min-height: 100dvh;
   }
 
   .column-left {
@@ -390,7 +392,7 @@ body::before {
 ========================= */
 @media (max-width: 454px) {
   .column-left {
-    grid-template-columns: 90px 1fr;
+    grid-template-columns: 80px 1fr;
   }
 
   .column-right {
