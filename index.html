@@ -6,70 +6,73 @@
     <title>Anuj Sharma · Front-End Developer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-      crossorigin="anonymous"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" />
     <style>
-      *,
-      *::before,
-      *::after {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
+      *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
       :root {
-        --bg: #111110;
-        --surface: #191918;
-        --lift: #222220;
-        --border: #2e2e2b;
-        --border-hi: #3e3e3a;
-        --text: #d4d2cc;
-        --muted: #6b6b66;
-        --dim: #3a3a36;
-        --white: #eeecea;
-        --accent: #c8c5bc;
+        --bg:       #111110;
+        --surface:  #191918;
+        --lift:     #222220;
+        --border:   #2e2e2b;
+        --border-hi:#3e3e3a;
+        --text:     #d4d2cc;
+        --muted:    #6b6b66;
+        --dim:      #3a3a36;
+        --white:    #eeecea;
+        --accent:   #c8c5bc;
       }
 
-      html {
-        font-size: 15px;
-      }
+      html { font-size: 15px; }
       body {
         background: var(--bg);
         color: var(--text);
-        font-family: "DM Mono", monospace;
+        font-family: 'DM Mono', monospace;
         font-weight: 300;
         height: 100dvh;
         overflow: hidden;
         cursor: default;
       }
-      a {
-        color: inherit;
-        text-decoration: none;
-      }
+      a { color: inherit; text-decoration: none; }
 
+      /* GRAIN */
       body::after {
-        content: "";
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        z-index: 9999;
+        content: '';
+        position: fixed; inset: 0;
+        pointer-events: none; z-index: 9998;
         opacity: 0.035;
         background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         background-size: 180px;
       }
 
+      /* ══ SCANLINE SWEEP ══ */
+      #scanline {
+        position: fixed; left: 0; right: 0; height: 2px; top: -2px;
+        background: linear-gradient(to right, transparent, rgba(200,197,188,0.4), transparent);
+        z-index: 99997; pointer-events: none;
+        animation: scanSweep 1.1s cubic-bezier(0.4,0,0.2,1) 0.3s both;
+      }
+      @keyframes scanSweep {
+        from { top: -2px; opacity: 1; }
+        to   { top: 100dvh; opacity: 0; }
+      }
+
+      /* ══ GLITCH on NAME (idle) ══ */
+      @keyframes glitch1 {
+        0%,94%,100% { clip-path: none; transform: none; opacity: 1; }
+        95%  { clip-path: inset(30% 0 50% 0); transform: translate(-3px,0); opacity: 0.8; }
+        96%  { clip-path: inset(60% 0 10% 0); transform: translate(3px,0);  opacity: 0.8; }
+        97%  { clip-path: none; transform: none; opacity: 1; }
+        98%  { clip-path: inset(10% 0 70% 0); transform: translate(-2px,0); opacity: 0.7; }
+        99%  { clip-path: none; transform: none; opacity: 1; }
+      }
+      .name { animation: glitch1 8s ease-in-out infinite; }
+
+      /* ══ LAYOUT ══ */
       .layout {
-        max-width: 1200px;
-        margin: 0 auto;
-        height: 100dvh;
-        min-height: 600px;
+        max-width: 1200px; margin: 0 auto;
+        height: 100dvh; min-height: 600px;
         display: grid;
         grid-template-columns: 260px 1fr 200px;
         grid-template-rows: 64px 1fr;
@@ -79,632 +82,401 @@
         animation: fadeIn 0.6s ease both;
       }
       @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(6px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
+        from { opacity: 0; transform: translateY(6px); }
+        to   { opacity: 1; transform: translateY(0); }
       }
-
-      .cell {
-        background: var(--bg);
-        overflow: hidden;
-        position: relative;
-      }
+      .cell { background: var(--bg); overflow: hidden; position: relative; }
 
       /* TOPBAR */
       .topbar {
-        grid-column: 1 / -1;
-        background: var(--surface);
-        display: grid;
-        grid-template-columns: 260px 1fr 200px;
-        gap: 1px;
+        grid-column: 1 / -1; background: var(--surface);
+        display: grid; grid-template-columns: 260px 1fr 200px; gap: 1px;
       }
-      .topbar-l,
-      .topbar-c,
-      .topbar-r {
-        background: var(--surface);
-        display: flex;
-        align-items: center;
-        padding: 0 1.2rem;
+      .topbar-l, .topbar-c, .topbar-r {
+        background: var(--surface); display: flex; align-items: center; padding: 0 1.2rem;
       }
-      .topbar-l {
-        font-size: 0.72rem;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        color: var(--muted);
-      }
-      .topbar-c {
-        gap: 1rem;
-      }
+      .topbar-l { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+      .topbar-c { gap: 1rem; }
       .topbar-c .name {
-        font-family: "DM Serif Display", serif;
-        font-size: 1.4rem;
-        font-style: italic;
-        color: var(--white);
+        font-family: 'DM Serif Display', serif; font-size: 1.4rem; font-style: italic; color: var(--white);
+        cursor: pointer; position: relative; display: inline-block;
+        user-select: none;
       }
-      .topbar-c .pipe {
-        color: var(--dim);
-        font-size: 1.1rem;
-      }
-      .topbar-c .role {
-        font-size: 0.72rem;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: var(--muted);
-      }
-      .topbar-r {
-        justify-content: flex-end;
-        gap: 1.4rem;
-      }
-      .topbar-r a {
-        font-size: 0.72rem;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: var(--muted);
-        transition: color 0.2s;
-      }
-      .topbar-r a:hover {
-        color: var(--white);
-      }
+      .topbar-c .pipe { color: var(--dim); font-size: 1.1rem; }
+      .topbar-c .role { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+      .topbar-r { justify-content: flex-end; gap: 1.4rem; }
+      .topbar-r a { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); transition: color 0.2s; }
+      .topbar-r a:hover { color: var(--white); }
 
       /* LEFT */
-      .panel-left {
-        grid-row: 2;
-        grid-column: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 1px;
-      }
-      .photo-cell {
-        flex: 0 0 auto;
-        position: relative;
-        overflow: hidden;
-      }
+      .panel-left { grid-row: 2; grid-column: 1; display: flex; flex-direction: column; gap: 1px; }
+      .photo-cell { flex: 0 0 auto; position: relative; overflow: hidden; }
       .photo-cell img {
-        width: 100%;
-        display: block;
-        object-fit: cover;
-        aspect-ratio: 4/5;
-        filter: none;
+        width: 100%; display: block; object-fit: cover; aspect-ratio: 4/5; filter: none;
         transition: transform 0.8s ease;
       }
-      .photo-cell:hover img {
-        transform: scale(1.025);
-      }
+      .photo-cell:hover img { transform: scale(1.025); }
       .photo-cell::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: repeating-linear-gradient(
-          to bottom,
-          transparent,
-          transparent 3px,
-          rgba(0, 0, 0, 0.08) 3px,
-          rgba(0, 0, 0, 0.08) 4px
-        );
+        content: ''; position: absolute; inset: 0;
+        background: repeating-linear-gradient(to bottom, transparent, transparent 3px, rgba(0,0,0,0.08) 3px, rgba(0,0,0,0.08) 4px);
         pointer-events: none;
       }
       .photo-tag {
-        position: absolute;
-        bottom: 0.7rem;
-        right: 0.7rem;
-        background: var(--bg);
-        border: 1px solid var(--border);
+        position: absolute; bottom: 0.7rem; right: 0.7rem;
+        background: var(--bg); border: 1px solid var(--border);
         padding: 0.25rem 0.5rem;
-        font-size: 0.55rem;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        color: var(--muted);
+        font-size: 0.55rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted);
       }
-      .about-cell {
-        flex: 1 1 auto;
-        background: var(--surface);
-        padding: 1.4rem 1.3rem;
-        display: flex;
-        flex-direction: column;
-        gap: 0.9rem;
-      }
-      .mono-label {
-        font-size: 0.7rem;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-        color: var(--muted);
-      }
-      .about-cell p {
-        font-size: 0.88rem;
-        line-height: 1.65;
-        color: var(--text);
-        font-weight: 300;
-      }
-      .stack-cell {
-        background: var(--surface);
-        padding: 1.1rem 1.3rem;
-      }
-      .stack-tags {
-        margin-top: 0.7rem;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 4px;
-      }
+      .about-cell { flex: 1 1 auto; background: var(--surface); padding: 1.4rem 1.3rem; display: flex; flex-direction: column; gap: 0.9rem; }
+      .mono-label { font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+      .about-cell p { font-size: 0.88rem; line-height: 1.65; color: var(--text); font-weight: 300; }
+      .stack-cell { background: var(--surface); padding: 1.1rem 1.3rem; }
+      .stack-tags { margin-top: 0.7rem; display: flex; flex-wrap: wrap; gap: 4px; }
+
+      /* ══ TAG BOUNCE ══ */
       .tag {
-        font-size: 0.72rem;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        padding: 0.35rem 0.65rem;
-        border: 1px solid var(--border);
-        color: var(--muted);
-        transition:
-          border-color 0.2s,
-          color 0.2s,
-          background 0.2s;
-        cursor: default;
+        font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+        padding: 0.35rem 0.65rem; border: 1px solid var(--border); color: var(--muted);
+        transition: border-color 0.2s, color 0.2s, background 0.2s;
+        cursor: pointer; display: inline-block;
+        transform-origin: center bottom;
       }
-      .tag:hover {
-        border-color: var(--accent);
-        color: var(--accent);
-        background: rgba(200, 197, 188, 0.04);
+      .tag:hover { border-color: var(--accent); color: var(--accent); background: rgba(200,197,188,0.04); }
+      .tag.bouncing { animation: tagBounce 0.5s cubic-bezier(0.36,0.07,0.19,0.97) both; }
+      @keyframes tagBounce {
+        0%   { transform: translateY(0)    scaleX(1)    scaleY(1); }
+        15%  { transform: translateY(-14px) scaleX(0.9)  scaleY(1.1); }
+        30%  { transform: translateY(0)    scaleX(1.15) scaleY(0.85); }
+        45%  { transform: translateY(-7px) scaleX(0.95) scaleY(1.05); }
+        60%  { transform: translateY(0)    scaleX(1.05) scaleY(0.95); }
+        75%  { transform: translateY(-3px) scaleX(1)    scaleY(1); }
+        100% { transform: translateY(0)    scaleX(1)    scaleY(1); }
       }
 
       /* CENTER */
-      .panel-center {
-        grid-row: 2;
-        grid-column: 2;
-        display: flex;
-        flex-direction: column;
-        gap: 1px;
-      }
+      .panel-center { grid-row: 2; grid-column: 2; display: flex; flex-direction: column; gap: 1px; }
       .proj-header {
-        background: var(--surface);
-        padding: 0 1.6rem;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-shrink: 0;
-      }
-      .proj-counter {
-        font-size: 0.6rem;
-        letter-spacing: 0.1em;
-        color: var(--muted);
-      }
-      .carousel-region {
-        flex: 1 1 auto;
-        position: relative;
-        overflow: hidden;
-        background: var(--bg);
+        background: var(--surface); padding: 0 1.6rem; height: 40px;
+        display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
       }
 
-      .slide {
-        position: absolute;
-        inset: 0;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.45s ease;
+      /* ══ FLIP COUNTER ══ */
+      .proj-counter {
+        font-size: 0.65rem; letter-spacing: 0.1em; color: var(--muted);
+        display: flex; align-items: center; gap: 0.3em;
+        font-variant-numeric: tabular-nums;
       }
-      .slide.active {
-        opacity: 1;
-        pointer-events: auto;
-      }
+      .flip-slot { display: inline-block; overflow: hidden; height: 1.1em; position: relative; }
+      .flip-inner { display: flex; flex-direction: column; transition: transform 0.28s cubic-bezier(0.4,0,0.2,1); }
+      .flip-inner span { display: block; height: 1.1em; line-height: 1.1em; }
+      .flip-sep { color: var(--dim); margin: 0 0.15em; }
+
+      .carousel-region { flex: 1 1 auto; position: relative; overflow: hidden; background: var(--bg); }
+      .slide { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity 0.45s ease; }
+      .slide.active { opacity: 1; pointer-events: auto; }
       .slide-img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
+        width: 100%; height: 100%; object-fit: cover; display: block;
         filter: grayscale(100%) brightness(0.55);
-        transition:
-          filter 0.7s ease,
-          transform 0.8s ease;
+        transition: filter 0.7s ease, transform 0.8s ease;
       }
-      .slide:hover .slide-img {
-        filter: grayscale(80%) brightness(0.65);
-        transform: scale(1.02);
-      }
+      .slide:hover .slide-img { filter: grayscale(80%) brightness(0.65); transform: scale(1.02); }
       .slide-vignette {
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
+        position: absolute; inset: 0; pointer-events: none;
         background:
-          linear-gradient(
-            to top,
-            rgba(10, 10, 10, 0.92) 0%,
-            rgba(10, 10, 10, 0.1) 45%,
-            transparent 70%
-          ),
-          linear-gradient(to right, rgba(10, 10, 10, 0.3) 0%, transparent 40%);
+          linear-gradient(to top, rgba(10,10,10,0.92) 0%, rgba(10,10,10,0.1) 45%, transparent 70%),
+          linear-gradient(to right, rgba(10,10,10,0.3) 0%, transparent 40%);
       }
-      .slide-text {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        padding: 2rem;
-      }
+      .slide-text { position: absolute; bottom: 0; left: 0; right: 0; padding: 2rem; }
       .slide-index {
-        font-size: 0.55rem;
-        letter-spacing: 0.22em;
-        text-transform: uppercase;
-        color: var(--muted);
-        margin-bottom: 0.6rem;
-        display: flex;
-        align-items: center;
-        gap: 0.6rem;
+        font-size: 0.55rem; letter-spacing: 0.22em; text-transform: uppercase;
+        color: var(--muted); margin-bottom: 0.6rem;
+        display: flex; align-items: center; gap: 0.6rem;
       }
-      .slide-index::before {
-        content: "";
-        display: inline-block;
-        width: 18px;
-        height: 1px;
-        background: var(--muted);
-      }
+      .slide-index::before { content: ''; display: inline-block; width: 18px; height: 1px; background: var(--muted); }
+
+      /* ══ LETTER REVEAL ══ */
       .slide-title {
-        font-family: "DM Serif Display", serif;
-        font-size: 2.4rem;
-        font-style: italic;
-        color: var(--white);
-        line-height: 1.05;
-        margin-bottom: 0.7rem;
+        font-family: 'DM Serif Display', serif; font-size: 2.4rem; font-style: italic;
+        color: var(--white); line-height: 1.05; margin-bottom: 0.7rem;
       }
-      .slide-desc {
-        font-size: 0.72rem;
-        font-weight: 300;
-        color: var(--muted);
-        max-width: 360px;
-        line-height: 1.55;
-        margin-bottom: 1.1rem;
+      .slide-title .letter {
+        display: inline-block; opacity: 0; transform: translateY(14px);
+        transition: opacity 0.22s ease, transform 0.22s ease;
       }
+
+      .slide-desc { font-size: 0.72rem; font-weight: 300; color: var(--muted); max-width: 360px; line-height: 1.55; margin-bottom: 1.1rem; }
       .slide-cta {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 0.58rem;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-        color: var(--muted);
-        border-bottom: 1px solid var(--dim);
-        padding-bottom: 2px;
-        transition:
-          color 0.2s,
-          border-color 0.2s;
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase;
+        color: var(--muted); border-bottom: 1px solid var(--dim); padding-bottom: 2px;
+        transition: color 0.2s, border-color 0.2s;
       }
-      .slide:hover .slide-cta {
-        color: var(--white);
-        border-color: var(--accent);
-      }
+      .slide:hover .slide-cta { color: var(--white); border-color: var(--accent); }
 
       .controls-bar {
-        background: var(--surface);
-        height: 50px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 1.4rem;
-        flex-shrink: 0;
+        background: var(--surface); height: 50px;
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 0 1.4rem; flex-shrink: 0;
       }
-      .thumbs {
-        display: flex;
-        gap: 6px;
-        align-items: center;
-      }
-      .thumb {
-        height: 8px;
-        width: 20px;
-        border: none;
-        cursor: pointer;
-        background: var(--dim);
-        transition:
-          width 0.25s,
-          background 0.25s;
-      }
-      .thumb.active {
-        width: 36px;
-        background: var(--accent);
-      }
-      .nav-btns {
-        display: flex;
-        gap: 1px;
-      }
+      .thumbs { display: flex; gap: 6px; align-items: center; }
+      .thumb { height: 8px; width: 20px; border: none; cursor: pointer; background: var(--dim); transition: width 0.25s, background 0.25s; }
+      .thumb.active { width: 36px; background: var(--accent); }
+      .nav-btns { display: flex; gap: 1px; }
+
+      /* ══ NAV BUTTON PRESS ══ */
       .nav-btns button {
-        width: 36px;
-        height: 36px;
-        border: 1px solid var(--border);
-        background: transparent;
-        color: var(--muted);
-        font-size: 0.85rem;
-        cursor: pointer;
-        transition:
-          background 0.15s,
-          color 0.15s,
-          border-color 0.15s;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        width: 36px; height: 36px; border: 1px solid var(--border);
+        background: transparent; color: var(--muted); font-size: 0.85rem;
+        cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s;
+        display: flex; align-items: center; justify-content: center;
       }
-      .nav-btns button:hover {
-        background: var(--lift);
-        border-color: var(--border-hi);
-        color: var(--white);
+      .nav-btns button:hover { background: var(--lift); border-color: var(--border-hi); color: var(--white); }
+      @keyframes btnPress {
+        0%   { transform: scale(1); }
+        35%  { transform: scaleX(0.72) scaleY(0.88); }
+        100% { transform: scale(1); }
       }
+      .nav-btns button.pressed { animation: btnPress 0.2s cubic-bezier(0.4,0,0.2,1) both; }
 
       /* RIGHT */
-      .panel-right {
-        grid-row: 2;
-        grid-column: 3;
-        display: flex;
-        flex-direction: column;
-        gap: 1px;
-      }
-      .social-cell {
-        display: flex;
-        flex-direction: column;
-        gap: 1px;
-      }
+      .panel-right { grid-row: 2; grid-column: 3; display: flex; flex-direction: column; gap: 1px; }
+      .social-cell { display: flex; flex-direction: column; gap: 1px; }
       .social-link {
-        background: var(--surface);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0.9rem 1.2rem;
-        font-size: 0.75rem;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: var(--muted);
-        transition:
-          background 0.15s,
-          color 0.15s,
-          padding-left 0.2s;
+        background: var(--surface); display: flex; align-items: center; justify-content: space-between;
+        padding: 0.9rem 1.2rem; font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase;
+        color: var(--muted); transition: background 0.15s, color 0.15s, padding-left 0.2s;
       }
-      .social-link:hover {
-        background: var(--lift);
-        color: var(--white);
-        padding-left: 1.6rem;
-      }
-      .social-link i {
-        font-size: 0.95rem;
-      }
-      .resume-cell {
-        background: var(--surface);
-        padding: 1.2rem;
-        display: flex;
-        flex-direction: column;
-        gap: 0.7rem;
-      }
+      .social-link:hover { background: var(--lift); color: var(--white); padding-left: 1.6rem; }
+      .social-link i { font-size: 0.95rem; }
+      .resume-cell { background: var(--surface); padding: 1.2rem; display: flex; flex-direction: column; gap: 0.7rem; }
       .resume-btn {
-        display: block;
-        border: 1px solid var(--border-hi);
-        background: transparent;
-        color: var(--text);
-        font-family: "DM Mono", monospace;
-        font-size: 0.75rem;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        padding: 0.9rem;
-        text-align: center;
-        transition:
-          background 0.15s,
-          color 0.15s,
-          border-color 0.15s;
+        display: block; border: 1px solid var(--border-hi); background: transparent;
+        color: var(--text); font-family: 'DM Mono', monospace;
+        font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase;
+        padding: 0.9rem; text-align: center;
+        transition: background 0.15s, color 0.15s, border-color 0.15s;
       }
-      .resume-btn:hover {
-        background: var(--lift);
-        border-color: var(--accent);
-        color: var(--white);
-      }
+      .resume-btn:hover { background: var(--lift); border-color: var(--accent); color: var(--white); }
       .meta-cell {
-        background: var(--surface);
-        flex: 1;
-        padding: 1.2rem;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
+        background: var(--surface); flex: 1; padding: 1.2rem;
+        display: flex; flex-direction: column; justify-content: space-between;
+        gap: 0.3rem;
       }
       .meta-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        padding: 0.6rem 0;
-        border-bottom: 1px solid var(--border);
-        flex: 1;
+        display: flex; justify-content: space-between; align-items: baseline;
+        padding: 0.6rem 0; border-bottom: 1px solid var(--border); flex: 1;
+        gap: 1rem;
       }
-      .meta-row:last-child {
-        border-bottom: none;
-      }
-      .meta-k {
-        font-size: 0.68rem;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: var(--muted);
-      }
-      .meta-v {
-        font-size: 0.78rem;
-        letter-spacing: 0.06em;
-        color: var(--text);
-      }
+      .meta-row:last-child { border-bottom: none; }
+      .meta-k { font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+      .meta-v { font-size: 0.78rem; letter-spacing: 0.06em; color: var(--text); white-space: nowrap; }
       .avail-dot {
-        display: inline-block;
-        width: 5px;
-        height: 5px;
-        border-radius: 50%;
-        background: var(--accent);
-        margin-right: 5px;
-        vertical-align: middle;
+        display: inline-block; width: 5px; height: 5px; border-radius: 50%;
+        background: var(--accent); margin-right: 5px; vertical-align: middle;
         animation: blink 3s ease-in-out infinite;
       }
-      @keyframes blink {
-        0%,
-        100% {
-          opacity: 1;
-        }
-        50% {
-          opacity: 0.3;
-        }
+      @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+      /* ══ TILT CARD — photo-cell 3-D tilt ══ */
+      .photo-cell { transform-style: preserve-3d; transition: transform 0.1s ease; }
+
+      /* ══ SLIDE COUNT TYPING CURSOR ══ */
+      .proj-counter::after {
+        content: '|'; animation: cursor-blink 1s step-end infinite;
+        color: var(--accent); margin-left: 1px;
       }
+      @keyframes cursor-blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+      /* ══ RESUME BTN PULSE on hover (heartbeat) ══ */
+      @keyframes heartbeat {
+        0%,100% { transform: scale(1); }
+        14%  { transform: scale(1.04); }
+        28%  { transform: scale(1); }
+        42%  { transform: scale(1.04); }
+        70%  { transform: scale(1); }
+      }
+      .resume-btn:hover { animation: heartbeat 0.9s ease infinite; background: var(--lift); border-color: var(--accent); color: var(--white); }
+
+      /* ══ ABOUT TEXT TYPEWRITER ══ */
+      .about-cell p {
+        position: relative;
+        overflow: hidden;
+        white-space: normal;
+      }
+      /* blinking cursor after typewriter text */
+      .about-cell p::after {
+        content: '|';
+        color: var(--accent);
+        font-weight: 400;
+        animation: cursor-blink 1s step-end infinite;
+        margin-left: 1px;
+      }
+      .about-cell p.done::after { display: none; }
+
+      /* ══ SLIDE SWIPE HINT — pulses on the real → button ══ */
+      @keyframes nextPulse {
+        0%   { box-shadow: 0 0 0 0   rgba(200,197,188,0.7); border-color: var(--accent); color: var(--white); transform: scale(1); }
+        40%  { box-shadow: 0 0 0 10px rgba(200,197,188,0);   border-color: var(--accent); transform: scale(1.12); }
+        55%  { transform: scale(0.95); }
+        70%  { transform: scale(1.06); }
+        85%  { transform: scale(0.98); }
+        100% { box-shadow: 0 0 0 0   rgba(200,197,188,0);   border-color: var(--border); color: var(--muted); transform: scale(1); }
+      }
+      .next.hinting {
+        animation: nextPulse 0.9s cubic-bezier(0.4,0,0.2,1);
+      }
+
+      /* ══ THUMB RIPPLE on active ══ */
+      .thumb.ripple::after {
+        content: '';
+        position: absolute; inset: -6px;
+        border-radius: 3px;
+        border: 1px solid var(--accent);
+        opacity: 0;
+        animation: thumbRipple 0.5s ease-out forwards;
+      }
+      .thumb { position: relative; }
+      @keyframes thumbRipple {
+        0%   { opacity: 0.7; inset: -2px; }
+        100% { opacity: 0;   inset: -10px; }
+      }
+
+      /* ══ SLIDE IMAGE FLASH on change ══ */
+      @keyframes slideFlash {
+        0%   { opacity: 1; }
+        20%  { opacity: 0.3; }
+        100% { opacity: 1; }
+      }
+      .slide.flash .slide-img { animation: slideFlash 0.35s ease; }
+
+      /* ══ META-V COUNTER TICK ══ */
+      .meta-v.ticking { animation: tickUp 0.25s cubic-bezier(0.4,0,0.2,1); }
+      @keyframes tickUp {
+        0%  { transform: translateY(6px); opacity:0; }
+        100%{ transform: translateY(0);   opacity:1; }
+      }
+
+      /* ══ TRAIL DOT ══ */
+      .trail-dot {
+        position: fixed; pointer-events: none; z-index: 9997;
+        border-radius: 50%;
+        background: var(--accent);
+        transform: translate(-50%,-50%);
+        animation: trailFade 0.6s ease-out forwards;
+      }
+      @keyframes trailFade {
+        0%   { opacity: 0.5; width: var(--sz); height: var(--sz); }
+        100% { opacity: 0;   width: 1px;        height: 1px; }
+      }
+
+      /* ══ PARTICLE BURST ══ */
+      .particle {
+        position: fixed; pointer-events: none; z-index: 99999;
+        border-radius: 50%;
+        background: var(--accent);
+        animation: particleFly var(--dur) ease-out forwards;
+      }
+      @keyframes particleFly {
+        0%   { transform: translate(0,0) scale(1); opacity: 0.9; }
+        100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+      }
+
+      /* ══ KONAMI / EASTER EGG overlay ══ */
+      #easter-egg {
+        position: fixed; inset: 0;
+        background: rgba(10,10,10,0.97);
+        z-index: 999999;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        gap: 1.2rem;
+        opacity: 0; pointer-events: none;
+        transition: opacity 0.4s ease;
+      }
+      #easter-egg.show { opacity: 1; pointer-events: auto; }
+      #easter-egg .egg-title {
+        font-family: 'DM Serif Display', serif; font-style: italic;
+        font-size: 2rem; color: var(--white);
+        animation: glitch1 3s ease-in-out infinite;
+      }
+      #easter-egg .egg-sub {
+        font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+        color: var(--muted); text-align: center; max-width: 280px; line-height: 1.8;
+      }
+      #easter-egg .egg-close {
+        margin-top: 0.5rem;
+        font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase;
+        border: 1px solid var(--border); padding: 0.55rem 1.2rem; color: var(--muted);
+        cursor: pointer; background: transparent; font-family: 'DM Mono', monospace;
+        transition: border-color 0.2s, color 0.2s;
+      }
+      #easter-egg .egg-close:hover { border-color: var(--accent); color: var(--white); }
+      /* Matrix rain inside egg */
+      #matrix-canvas { position: absolute; inset: 0; opacity: 0.08; z-index: -1; }
 
       /* MOBILE ≤860px */
       @media (max-width: 860px) {
-        body {
-          overflow: auto;
-          height: auto;
-        }
-
-        .layout {
-          grid-template-columns: 1fr;
-          grid-template-rows: 64px auto auto auto;
-          height: auto;
-          min-height: 100dvh;
-        }
-        .topbar {
-          grid-template-columns: 1fr;
-        }
-        .topbar-l {
-          display: none;
-        }
-
-        .panel-left,
-        .panel-center,
-        .panel-right {
-          grid-column: 1;
-          grid-row: auto;
-        }
-
-        /* Photo LEFT + About RIGHT, Stack full-width below */
-        .panel-left {
-          display: grid;
-          grid-template-columns: 140px 1fr;
-          grid-template-rows: auto auto;
-          gap: 1px;
-        }
-        .photo-cell {
-          grid-column: 1;
-          grid-row: 1 / 3; /* spans both rows so photo is tall */
-        }
-        .photo-cell img {
-          aspect-ratio: unset;
-          height: 100%;
-          width: 100%;
-          object-fit: cover;
-          object-position: top center;
-        }
-        .about-cell {
-          grid-column: 2;
-          grid-row: 1;
-        }
-        .stack-cell {
-          grid-column: 2;
-          grid-row: 2;
-        }
-
-        /* Projects */
-        .carousel-region {
-          min-height: 300px;
-        }
-
-        /* Right panel */
-        .panel-right {
-          flex-direction: row;
-          flex-wrap: wrap;
-        }
-        .social-cell {
-          flex: 1;
-          flex-direction: row;
-          gap: 1px;
-        }
-        .social-link {
-          flex: 1;
-          justify-content: center;
-        }
-        .resume-cell {
-          flex: 0 0 160px;
-        }
-        .meta-cell {
-          flex: 0 0 100%;
-          flex-direction: row;
-          flex-wrap: wrap;
-        }
-        .meta-row {
-          flex: 1 1 45%;
-          border-bottom: 1px solid var(--border);
-        }
+        body { overflow: auto; height: auto; }
+        .layout { grid-template-columns: 1fr; grid-template-rows: 64px auto auto auto; height: auto; min-height: 100dvh; }
+        .topbar { grid-template-columns: 1fr; }
+        .topbar-l { display: none; }
+        .panel-left, .panel-center, .panel-right { grid-column: 1; grid-row: auto; }
+        .panel-left { display: grid; grid-template-columns: 140px 1fr; grid-template-rows: auto auto; gap: 1px; }
+        .photo-cell { grid-column: 1; grid-row: 1 / 3; }
+        .photo-cell img { aspect-ratio: unset; height: 100%; width: 100%; object-fit: cover; object-position: top center; }
+        .about-cell { grid-column: 2; grid-row: 1; }
+        .stack-cell { grid-column: 2; grid-row: 2; }
+        .carousel-region { min-height: 300px; }
+        .panel-right { flex-direction: row; flex-wrap: wrap; }
+        .social-cell { flex: 1; flex-direction: row; gap: 1px; }
+        .social-link { flex: 1; justify-content: center; }
+        .resume-cell { flex: 0 0 160px; }
+        .meta-cell { flex: 0 0 100%; flex-direction: row; flex-wrap: wrap; }
+        .meta-row { flex: 1 1 45%; border-bottom: 1px solid var(--border); }
       }
 
       /* MOBILE ≤500px */
       @media (max-width: 500px) {
-        .layout {
-          border: none;
-          gap: 1px;
-        }
-
-        /* Topbar — just name, no role */
-        .topbar-c .name {
-          font-size: 1.1rem;
-        }
-        .topbar-c .role {
-          display: none;
-        }
-        .topbar-c .pipe {
-          display: none;
-        }
-        .topbar-r {
-          display: none;
-        }
-
-        /* Photo LEFT (narrower) + About RIGHT */
-        .panel-left {
-          grid-template-columns: 110px 1fr;
-        }
-
-        /* Carousel */
-        .carousel-region {
-          min-height: 260px;
-        }
-        .slide-title {
-          font-size: 1.5rem;
-        }
-        .slide-desc {
-          font-size: 0.7rem;
-        }
-        .slide-text {
-          padding: 1.2rem;
-        }
-
-        /* Right panel: full column */
-        .panel-right {
-          flex-direction: column;
-        }
-        .social-cell {
-          flex-direction: row;
-          gap: 1px;
-        }
-        .social-link {
-          flex: 1;
-          flex-direction: column;
-          align-items: center;
-          gap: 0.4rem;
-          padding: 0.9rem 0.6rem;
-          font-size: 0.7rem;
-        }
-        .resume-cell {
-          flex: 0 0 auto;
-        }
-        .meta-cell {
-          flex: 0 0 auto;
-          flex-direction: column;
-        }
-        .meta-row {
-          flex: none;
-        }
+        .layout { border: none; gap: 1px; }
+        .topbar-c .name { font-size: 1.1rem; }
+        .topbar-c .role { display: none; }
+        .topbar-c .pipe { display: none; }
+        .topbar-r { display: none; }
+        .panel-left { grid-template-columns: 110px 1fr; }
+        .carousel-region { min-height: 260px; }
+        .slide-title { font-size: 1.5rem; }
+        .slide-desc { font-size: 0.7rem; }
+        .slide-text { padding: 1.2rem; }
+        .panel-right { flex-direction: column; }
+        .social-cell { flex-direction: row; gap: 1px; }
+        .social-link { flex: 1; flex-direction: column; align-items: center; gap: 0.4rem; padding: 0.9rem 0.6rem; font-size: 0.7rem; }
+        .resume-cell { flex: 0 0 auto; }
+        .meta-cell { flex: 0 0 auto; flex-direction: column; }
+        .meta-row { flex: none; }
       }
     </style>
   </head>
   <body>
+
+    <div id="scanline"></div>
+
+    <!-- EASTER EGG OVERLAY -->
+    <div id="easter-egg">
+      <canvas id="matrix-canvas"></canvas>
+      <div class="egg-title">You found it.</div>
+      <div class="egg-sub">
+        ↑ ↑ ↓ ↓ ← → ← → B A<br>
+        Classic moves. Good instincts.<br><br>
+        Anuj Sharma — MERN Stack Developer<br>
+        Open to work · Delhi, IN
+      </div>
+      <button class="egg-close" id="egg-close">Close ×</button>
+    </div>
+
     <div class="layout">
+
       <header class="topbar">
         <div class="topbar-l">Portfolio · 2025</div>
         <div class="topbar-c">
-          <span class="name">Anuj Sharma</span>
+          <span class="name" id="name-el" title="click me">Anuj Sharma</span>
           <span class="pipe">/</span>
           <span class="role">MERN-Stack Developer</span>
         </div>
@@ -717,18 +489,12 @@
 
       <aside class="panel-left">
         <div class="photo-cell cell">
-          <img
-            src="ChatGPT Image Jan 24, 2026, 03_44_30 PM.png"
-            alt="Anuj Sharma"
-          />
+          <img src="ChatGPT Image Jan 24, 2026, 03_44_30 PM.png" alt="Anuj Sharma" />
           <div class="photo-tag">Delhi, IN</div>
         </div>
         <div class="about-cell cell">
           <div class="mono-label">Profile</div>
-          <p>
-            Self-taught front-end developer inspired by Swiss design. Focused on
-            clarity, structure, and product thinking.
-          </p>
+          <p>Self-taught front-end developer inspired by Swiss design. Focused on clarity, structure, and product thinking.</p>
         </div>
         <div class="stack-cell cell">
           <div class="mono-label">Stack</div>
@@ -748,117 +514,76 @@
       <main class="panel-center">
         <div class="proj-header cell">
           <span class="mono-label">Selected Work</span>
-          <span class="proj-counter" id="counter">01 — 04</span>
+          <span class="proj-counter" id="counter" aria-live="polite"></span>
         </div>
         <div class="carousel-region cell">
+
           <a class="slide active" href="https://vasuist.com" target="_blank">
             <img class="slide-img" src="image copy 4.png" alt="Infosec Compliance" />
             <div class="slide-vignette"></div>
             <div class="slide-text">
               <div class="slide-index">Project 01</div>
-              <h2 class="slide-title">Infosec<br />Compliance</h2>
-              <p class="slide-desc">
-                Swiss-inspired static site simplifying compliance services for
-                modern teams.
-              </p>
+              <h2 class="slide-title">Infosec<br>Compliance</h2>
+              <p class="slide-desc">Swiss-inspired static site simplifying compliance services for modern teams.</p>
               <span class="slide-cta">View Live ↗</span>
             </div>
           </a>
-          <a
-            class="slide"
-            href="https://chat-app-self-kappa-74.vercel.app/login"
-            target="_blank"
-          >
-            <img class="slide-img" src="image copy 2.png" alt="Chat Ap" />
+
+          <a class="slide" href="https://chat-app-self-kappa-74.vercel.app/login" target="_blank">
+            <img class="slide-img" src="image copy 2.png" alt="Chat App" />
             <div class="slide-vignette"></div>
             <div class="slide-text">
               <div class="slide-index">Project 02</div>
-              <h2 class="slide-title">Chat<br />App</h2>
-              <p class="slide-desc">
-                A real-time chat application built with React, Node.js, Express,
-                and Socket.io. Features JWT authentication, live online status,
-                and instant messaging with a clean animated UI.
-              </p>
+              <h2 class="slide-title">Chat<br>App</h2>
+              <p class="slide-desc">Real-time chat with React, Node.js, Express &amp; Socket.io. JWT auth, live status, instant messaging.</p>
               <span class="slide-cta">View Live ↗</span>
             </div>
           </a>
 
-          <a
-            class="slide"
-            href="https://anuj-ng.github.io/covid/"
-            target="_blank"
-          >
-            <img
-              class="slide-img"
-              src="Screenshot (6).png"
-              alt="COVID-19 Dashboard"
-            />
+          <a class="slide" href="https://anuj-ng.github.io/covid/" target="_blank">
+            <img class="slide-img" src="Screenshot (6).png" alt="COVID-19 Dashboard" />
             <div class="slide-vignette"></div>
             <div class="slide-text">
               <div class="slide-index">Project 03</div>
-              <h2 class="slide-title">COVID-19<br />Dashboard</h2>
-              <p class="slide-desc">
-                React dashboard visualizing India's COVID-19 data with live
-                charts and maps.
-              </p>
+              <h2 class="slide-title">COVID-19<br>Dashboard</h2>
+              <p class="slide-desc">React dashboard visualizing India's COVID-19 data with live charts and maps.</p>
               <span class="slide-cta">View Live ↗</span>
             </div>
           </a>
 
-          <a
-            class="slide"
-            href="https://anuj-ng.github.io/taskassignment"
-            target="_blank"
-          >
+          <a class="slide" href="https://anuj-ng.github.io/taskassignment" target="_blank">
             <img class="slide-img" src="image copy.png" alt="ERP Task System" />
             <div class="slide-vignette"></div>
             <div class="slide-text">
               <div class="slide-index">Project 04</div>
-              <h2 class="slide-title">ERP Task<br />System</h2>
-              <p class="slide-desc">
-                Admin task assignment tool with Local Storage persistence for
-                small teams.
-              </p>
-              <span class="slide-cta">View Live ↗</span>
-            </div>
-          </a>
-          <a
-            class="slide"
-            href="https://bookstore-crud-lake.vercel.app/"
-            target="_blank"
-          >
-            <img class="slide-img" src="image copy 3.png" alt="Book Store" />
-            <div class="slide-vignette"></div>
-            <div class="slide-text">
-              <div class="slide-index">Project 05</div>
-              <h2 class="slide-title">CRUD<br />Bookstore</h2>
-              <p class="slide-desc">
-                A lightweight CRUD-based Book Management System built to manage
-                a book inventory. Users can add books with details including
-                title, author, selling price, and publish date, and remove them
-                as needed. Features a clean tabular UI for easy readability.
-              </p>
+              <h2 class="slide-title">ERP Task<br>System</h2>
+              <p class="slide-desc">Admin task assignment tool with Local Storage persistence for small teams.</p>
               <span class="slide-cta">View Live ↗</span>
             </div>
           </a>
 
-          <a
-            class="slide"
-            href="https://anuj-ng.github.io/weatherapp/"
-            target="_blank"
-          >
+          <a class="slide" href="https://bookstore-crud-lake.vercel.app/" target="_blank">
+            <img class="slide-img" src="image copy 3.png" alt="Book Store" />
+            <div class="slide-vignette"></div>
+            <div class="slide-text">
+              <div class="slide-index">Project 05</div>
+              <h2 class="slide-title">CRUD<br>Bookstore</h2>
+              <p class="slide-desc">Lightweight CRUD book management — add, view, remove books with a clean tabular UI.</p>
+              <span class="slide-cta">View Live ↗</span>
+            </div>
+          </a>
+
+          <a class="slide" href="https://anuj-ng.github.io/weatherapp/" target="_blank">
             <img class="slide-img" src="image.png" alt="Weather App" />
             <div class="slide-vignette"></div>
             <div class="slide-text">
               <div class="slide-index">Project 06</div>
-              <h2 class="slide-title">Weather<br />App</h2>
-              <p class="slide-desc">
-                Minimal weather app with live API data, clean UI, and location
-                search.
-              </p>
+              <h2 class="slide-title">Weather<br>App</h2>
+              <p class="slide-desc">Minimal weather app with live API data, clean UI, and location search.</p>
               <span class="slide-cta">View Live ↗</span>
             </div>
           </a>
+
         </div>
         <div class="controls-bar cell">
           <div class="thumbs">
@@ -878,75 +603,307 @@
 
       <aside class="panel-right">
         <div class="social-cell">
-          <a
-            class="social-link cell"
-            href="https://github.com/anuj-ng"
-            target="_blank"
-          >
-            <span>GitHub</span>
-            <i class="fa-brands fa-github"></i>
+          <a class="social-link cell" href="https://github.com/anuj-ng" target="_blank">
+            <span>GitHub</span><i class="fa-brands fa-github"></i>
           </a>
-          <a
-            class="social-link cell"
-            href="https://www.linkedin.com/in/anuj-sharma-a25912235/"
-            target="_blank"
-          >
-            <span>LinkedIn</span>
-            <i class="fa-brands fa-linkedin-in"></i>
+          <a class="social-link cell" href="https://www.linkedin.com/in/anuj-sharma-a25912235/" target="_blank">
+            <span>LinkedIn</span><i class="fa-brands fa-linkedin-in"></i>
           </a>
         </div>
         <div class="resume-cell cell">
           <div class="mono-label">Document</div>
-          <a
-            class="resume-btn"
-            href="https://drive.google.com/file/d/16ETWqOzxHuh79u6SgeUVkX8XUznlH032/view?usp=drivesdk"
-            target="_blank"
-            >Download CV ↗</a
-          >
+          <a class="resume-btn" href="https://drive.google.com/file/d/16ETWqOzxHuh79u6SgeUVkX8XUznlH032/view?usp=drivesdk" target="_blank">Download CV ↗</a>
         </div>
         <div class="meta-cell cell">
-          <div class="meta-row">
-            <span class="meta-k">Status</span>
-            <span class="meta-v"><span class="avail-dot"></span>Open</span>
-          </div>
-          <div class="meta-row">
-            <span class="meta-k">Focus</span>
-            <span class="meta-v">MERN</span>
-          </div>
-          <div class="meta-row">
-            <span class="meta-k">Base</span>
-            <span class="meta-v">Delhi</span>
-          </div>
-          <div class="meta-row">
-            <span class="meta-k">Works</span>
-            <span class="meta-v">06</span>
-          </div>
+          <div class="meta-row"><span class="meta-k">Status</span><span class="meta-v"><span class="avail-dot"></span>Open</span></div>
+          <div class="meta-row"><span class="meta-k">Focus</span><span class="meta-v">MERN</span></div>
+          <div class="meta-row"><span class="meta-k">Base</span><span class="meta-v">Delhi</span></div>
+          <div class="meta-row"><span class="meta-k">Works</span><span class="meta-v">06</span></div>
         </div>
       </aside>
+
     </div>
+
     <script>
-      const slides = document.querySelectorAll(".slide");
-      const thumbs = document.querySelectorAll(".thumb");
-      const counter = document.getElementById("counter");
-      const prev = document.querySelector(".prev");
-      const next = document.querySelector(".next");
-      let idx = 0;
-      const pad = (n) => String(n + 1).padStart(2, "0");
-      function go(i) {
-        slides[idx].classList.remove("active");
-        thumbs[idx].classList.remove("active");
-        idx = (i + slides.length) % slides.length;
-        slides[idx].classList.add("active");
-        thumbs[idx].classList.add("active");
-        counter.textContent = `${pad(idx)} — ${pad(slides.length - 1)}`;
-      }
-      prev.onclick = () => go(idx - 1);
-      next.onclick = () => go(idx + 1);
-      thumbs.forEach((t, i) => (t.onclick = () => go(i)));
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "ArrowLeft") go(idx - 1);
-        if (e.key === "ArrowRight") go(idx + 1);
+    /* ══════════════════════════════════════════
+       1. FLIP COUNTER
+    ══════════════════════════════════════════ */
+    const counterEl = document.getElementById('counter');
+    const TOTAL = 6;
+    const allDigits = ['0','1','2','3','4','5','6','7','8','9'];
+    function makeSlot() {
+      const slot = document.createElement('span'); slot.className = 'flip-slot';
+      const inner = document.createElement('span'); inner.className = 'flip-inner';
+      allDigits.forEach(d => { const s = document.createElement('span'); s.textContent = d; inner.appendChild(s); });
+      slot.appendChild(inner);
+      return { slot, inner };
+    }
+    const s1=makeSlot(), s2=makeSlot(), s3=makeSlot(), s4=makeSlot();
+    const sep=document.createElement('span'); sep.className='flip-sep'; sep.textContent=' — ';
+    counterEl.append(s1.slot, s2.slot, sep, s3.slot, s4.slot);
+    function setSlot(s,d){ s.inner.style.transform=`translateY(-${parseInt(d,10)*1.1}em)`; }
+    function updateCounter(n){
+      const c=String(n+1).padStart(2,'0'), t=String(TOTAL).padStart(2,'0');
+      setSlot(s1,c[0]); setSlot(s2,c[1]); setSlot(s3,t[0]); setSlot(s4,t[1]);
+    }
+    updateCounter(0);
+
+    /* ══════════════════════════════════════════
+       2. LETTER REVEAL
+    ══════════════════════════════════════════ */
+    function wrapLetters(el){
+      const nodes=Array.from(el.childNodes); el.innerHTML='';
+      nodes.forEach(n=>{
+        if(n.nodeType===Node.TEXT_NODE){
+          n.textContent.split('').forEach(ch=>{
+            const s=document.createElement('span'); s.className='letter';
+            s.textContent=ch===' '?'\u00A0':ch; el.appendChild(s);
+          });
+        } else el.appendChild(n.cloneNode(true));
       });
+    }
+    document.querySelectorAll('.slide-title').forEach(wrapLetters);
+    function triggerReveal(slideEl){
+      const letters=slideEl.querySelectorAll('.slide-title .letter');
+      letters.forEach(l=>{ l.style.opacity='0'; l.style.transform='translateY(14px)'; l.style.transition='none'; });
+      requestAnimationFrame(()=>{
+        letters.forEach((l,i)=>{
+          l.style.transition=`opacity 0.22s ease ${i*28}ms, transform 0.22s ease ${i*28}ms`;
+          l.style.opacity='1'; l.style.transform='translateY(0)';
+        });
+      });
+    }
+
+    /* ══════════════════════════════════════════
+       3. CAROUSEL + NAV PRESS
+    ══════════════════════════════════════════ */
+    const slides=document.querySelectorAll('.slide');
+    const thumbs=document.querySelectorAll('.thumb');
+    const prevBtn=document.querySelector('.prev');
+    const nextBtn=document.querySelector('.next');
+    let idx=0;
+
+    function go(i){
+      // flash outgoing slide
+      slides[idx].classList.add('flash');
+      slides[idx].addEventListener('animationend',()=>slides[idx].classList.remove('flash'),{once:true});
+
+      slides[idx].classList.remove('active'); thumbs[idx].classList.remove('active');
+      idx=(i+slides.length)%slides.length;
+      slides[idx].classList.add('active'); thumbs[idx].classList.add('active');
+      updateCounter(idx); triggerReveal(slides[idx]);
+
+      // thumb ripple on active thumb
+      const activThumb = thumbs[idx];
+      activThumb.classList.remove('ripple'); void activThumb.offsetWidth;
+      activThumb.classList.add('ripple');
+      activThumb.addEventListener('animationend',()=>activThumb.classList.remove('ripple'),{once:true});
+    }
+
+    function pressBtn(btn,action){
+      btn.classList.remove('pressed'); void btn.offsetWidth;
+      btn.classList.add('pressed');
+      btn.addEventListener('animationend',()=>btn.classList.remove('pressed'),{once:true});
+      action();
+    }
+    prevBtn.onclick=()=>pressBtn(prevBtn,()=>go(idx-1));
+    nextBtn.onclick=()=>pressBtn(nextBtn,()=>go(idx+1));
+    thumbs.forEach((t,i)=>t.onclick=()=>go(i));
+    document.addEventListener('keydown',e=>{
+      if(e.key==='ArrowLeft')  pressBtn(prevBtn,()=>go(idx-1));
+      if(e.key==='ArrowRight') pressBtn(nextBtn,()=>go(idx+1));
+    });
+    triggerReveal(slides[0]);
+
+    // Swipe hint — pulse the real → button 3 times, 2.5s after load
+    function fireHint() {
+      let count = 0;
+      function pulse() {
+        if (count >= 3) return;
+        nextBtn.classList.remove('hinting'); void nextBtn.offsetWidth;
+        nextBtn.classList.add('hinting');
+        nextBtn.addEventListener('animationend', () => {
+          nextBtn.classList.remove('hinting');
+          count++;
+          if (count < 3) setTimeout(pulse, 300);
+        }, { once: true });
+      }
+      pulse();
+    }
+    setTimeout(fireHint, 2500);
+
+    /* ══════════════════════════════════════════
+       4. PARTICLES helper
+    ══════════════════════════════════════════ */
+    function spawnParticles(el, count=10){
+      const rect=el.getBoundingClientRect();
+      const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
+      for(let i=0;i<count;i++){
+        const p=document.createElement('div'); p.className='particle';
+        const angle=(Math.PI*2*i)/count+(Math.random()-0.5)*0.6;
+        const dist=35+Math.random()*45;
+        const tx=Math.cos(angle)*dist, ty=Math.sin(angle)*dist;
+        const dur=0.4+Math.random()*0.35;
+        const sz=2+Math.random()*4;
+        p.style.cssText=`left:${cx}px;top:${cy}px;--tx:${tx}px;--ty:${ty}px;--dur:${dur}s;width:${sz}px;height:${sz}px;`;
+        document.body.appendChild(p);
+        p.addEventListener('animationend',()=>p.remove(),{once:true});
+      }
+    }
+
+    /* ══════════════════════════════════════════
+       5. TAG BOUNCE + particles
+    ══════════════════════════════════════════ */
+    document.querySelectorAll('.tag').forEach(tag=>{
+      tag.addEventListener('click',()=>{
+        tag.classList.remove('bouncing'); void tag.offsetWidth;
+        tag.classList.add('bouncing');
+        tag.addEventListener('animationend',()=>tag.classList.remove('bouncing'),{once:true});
+        spawnParticles(tag,8);
+      });
+    });
+
+    /* ══════════════════════════════════════════
+       6. NAME SCRAMBLE + particles
+    ══════════════════════════════════════════ */
+    const nameEl=document.getElementById('name-el');
+    const originalName='Anuj Sharma';
+    const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%&*<>?';
+    let nameAnimating=false;
+    nameEl.addEventListener('click',()=>{
+      if(nameAnimating) return;
+      nameAnimating=true;
+      spawnParticles(nameEl,18);
+      let iter=0;
+      const iv=setInterval(()=>{
+        nameEl.textContent=originalName.split('').map((ch,i)=>{
+          if(ch===' ') return ' ';
+          if(i<iter) return originalName[i];
+          return chars[Math.floor(Math.random()*chars.length)];
+        }).join('');
+        iter+=0.4;
+        if(iter>=originalName.length){ nameEl.textContent=originalName; clearInterval(iv); nameAnimating=false; }
+      },40);
+    });
+
+    /* ══════════════════════════════════════════
+       7. PROFILE TYPEWRITER — on page load
+    ══════════════════════════════════════════ */
+    const aboutP = document.querySelector('.about-cell p');
+    const fullText = aboutP.textContent.trim();
+    aboutP.textContent = '';
+    let twIdx = 0;
+    function typeNext() {
+      if (twIdx < fullText.length) {
+        aboutP.textContent += fullText[twIdx];
+        twIdx++;
+        // vary speed slightly for natural feel
+        const delay = fullText[twIdx - 1] === '.' || fullText[twIdx - 1] === ','
+          ? 120 + Math.random() * 60
+          : 28 + Math.random() * 22;
+        setTimeout(typeNext, delay);
+      } else {
+        aboutP.classList.add('done'); // hide cursor
+      }
+    }
+    // start after page fade-in
+    setTimeout(typeNext, 800);
+
+    /* ══════════════════════════════════════════
+       8. PHOTO 3-D TILT on mousemove
+    ══════════════════════════════════════════ */
+    const photoCell=document.querySelector('.photo-cell');
+    photoCell.addEventListener('mousemove',e=>{
+      const r=photoCell.getBoundingClientRect();
+      const nx=((e.clientX-r.left)/r.width -0.5)*2;   // -1 to 1
+      const ny=((e.clientY-r.top) /r.height-0.5)*2;
+      photoCell.style.transform=`perspective(600px) rotateY(${nx*7}deg) rotateX(${-ny*7}deg) scale(1.02)`;
+    });
+    photoCell.addEventListener('mouseleave',()=>{
+      photoCell.style.transition='transform 0.5s ease';
+      photoCell.style.transform='perspective(600px) rotateY(0deg) rotateX(0deg) scale(1)';
+      setTimeout(()=>photoCell.style.transition='transform 0.1s ease',500);
+    });
+    photoCell.addEventListener('mouseenter',()=>{ photoCell.style.transition='transform 0.1s ease'; });
+
+    /* ══════════════════════════════════════════
+       8. MOUSE TRAIL DOTS
+    ══════════════════════════════════════════ */
+    let lastTrail=0;
+    document.addEventListener('mousemove',e=>{
+      const now=Date.now();
+      if(now-lastTrail<60) return; // throttle
+      lastTrail=now;
+      const d=document.createElement('div'); d.className='trail-dot';
+      const sz=3+Math.random()*4;
+      d.style.cssText=`left:${e.clientX}px;top:${e.clientY}px;--sz:${sz}px;width:${sz}px;height:${sz}px;`;
+      document.body.appendChild(d);
+      d.addEventListener('animationend',()=>d.remove(),{once:true});
+    });
+
+    /* ══════════════════════════════════════════
+       9. META VALUES — tick up animation
+          on page load, staggered
+    ══════════════════════════════════════════ */
+    document.querySelectorAll('.meta-v').forEach((v,i)=>{
+      setTimeout(()=>{
+        v.classList.add('ticking');
+        v.addEventListener('animationend',()=>v.classList.remove('ticking'),{once:true});
+      }, 800 + i*150);
+    });
+
+    /* ══════════════════════════════════════════
+       11. CAROUSEL SWIPE (touch)
+    ══════════════════════════════════════════ */
+    let touchStartX=0;
+    const carouselEl=document.querySelector('.carousel-region');
+    carouselEl.addEventListener('touchstart',e=>{ touchStartX=e.touches[0].clientX; },{passive:true});
+    carouselEl.addEventListener('touchend',e=>{
+      const dx=e.changedTouches[0].clientX-touchStartX;
+      if(Math.abs(dx)>40){ dx<0?go(idx+1):go(idx-1); }
+    });
+
+    /* ══════════════════════════════════════════
+       12. KONAMI CODE → EASTER EGG
+    ══════════════════════════════════════════ */
+    const KONAMI=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+    let konamiIdx=0;
+    const eggOverlay=document.getElementById('easter-egg');
+    const eggClose=document.getElementById('egg-close');
+    const matrixCanvas=document.getElementById('matrix-canvas');
+
+    document.addEventListener('keydown',e=>{
+      if(e.key===KONAMI[konamiIdx]){ konamiIdx++; if(konamiIdx===KONAMI.length){ konamiIdx=0; showEasterEgg(); } }
+      else konamiIdx=e.key===KONAMI[0]?1:0;
+    });
+    eggClose.addEventListener('click',()=>{ eggOverlay.classList.remove('show'); stopMatrix(); });
+
+    function showEasterEgg(){
+      eggOverlay.classList.add('show'); startMatrix();
+      // burst particles from center
+      const fake={getBoundingClientRect:()=>({left:window.innerWidth/2-2,top:window.innerHeight/2-2,width:4,height:4})};
+      spawnParticles(fake,30);
+    }
+    let matrixRaf;
+    function startMatrix(){
+      const ctx=matrixCanvas.getContext('2d');
+      matrixCanvas.width=window.innerWidth; matrixCanvas.height=window.innerHeight;
+      const cols=Math.floor(matrixCanvas.width/14);
+      const drops=Array(cols).fill(1);
+      function draw(){
+        ctx.fillStyle='rgba(10,10,10,0.15)'; ctx.fillRect(0,0,matrixCanvas.width,matrixCanvas.height);
+        ctx.fillStyle='#c8c5bc'; ctx.font='13px DM Mono,monospace';
+        drops.forEach((y,i)=>{
+          const ch=String.fromCharCode(0x30A0+Math.floor(Math.random()*96));
+          ctx.fillText(ch,i*14,y*14);
+          if(y*14>matrixCanvas.height&&Math.random()>0.975) drops[i]=0;
+          drops[i]++;
+        });
+        matrixRaf=requestAnimationFrame(draw);
+      }
+      draw();
+    }
+    function stopMatrix(){ cancelAnimationFrame(matrixRaf); }
     </script>
   </body>
 </html>
