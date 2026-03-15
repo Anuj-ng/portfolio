@@ -41,7 +41,9 @@
         font-size: 15px;
       }
       body {
-        background: var(--bg);
+        background: var(
+          --border
+        ); /* matches grid gap colour so sides blend in */
         color: var(--text);
         font-family: "DM Mono", monospace;
         font-weight: 300;
@@ -130,9 +132,9 @@
         animation: glitch1 8s ease-in-out infinite;
       }
 
+      /* ── LAYOUT: full-width, no max-width cap ── */
       .layout {
-        max-width: 1200px;
-        margin: 0 auto;
+        width: 100%;
         height: 100dvh;
         min-height: 600px;
         display: grid;
@@ -140,7 +142,6 @@
         grid-template-rows: 64px 1fr;
         gap: 1px;
         background: var(--border);
-        border: 1px solid var(--border);
         animation: fadeIn 0.6s ease both;
       }
       @keyframes fadeIn {
@@ -663,7 +664,7 @@
         animation: slideFlash 0.35s ease;
       }
 
-      /* ══ RIGHT PANEL ══ */
+      /* RIGHT */
       .panel-right {
         grid-row: 2;
         grid-column: 3;
@@ -671,7 +672,6 @@
         flex-direction: column;
         gap: 1px;
       }
-
       .social-cell {
         display: flex;
         flex-direction: column;
@@ -700,7 +700,6 @@
       .social-link i {
         font-size: 0.95rem;
       }
-
       .resume-cell {
         background: var(--surface);
         padding: 1.2rem;
@@ -749,10 +748,9 @@
         color: var(--white);
       }
 
-      /* ══ META CELL — now contains clock + email + rows all in one box ══ */
       .meta-cell {
         background: var(--surface);
-        flex: 1; /* fills remaining space exactly */
+        flex: 1;
         padding: 1.2rem;
         display: flex;
         flex-direction: column;
@@ -760,8 +758,6 @@
         gap: 0;
         overflow: hidden;
       }
-
-      /* clock row */
       .meta-clock-row {
         display: flex;
         justify-content: space-between;
@@ -786,8 +782,6 @@
         white-space: nowrap;
         text-align: right;
       }
-
-      /* email row */
       .meta-email-row {
         display: flex;
         flex-direction: column;
@@ -814,8 +808,6 @@
       .email-addr:hover {
         color: var(--white);
       }
-
-      /* standard meta rows — shrunk slightly */
       .meta-row {
         display: flex;
         justify-content: space-between;
@@ -874,7 +866,6 @@
         }
       }
 
-      /* ══ MISC ══ */
       .trail-dot {
         position: fixed;
         pointer-events: none;
@@ -915,7 +906,6 @@
         }
       }
 
-      /* ══ EASTER EGG ══ */
       #easter-egg {
         position: fixed;
         inset: 0;
@@ -1047,16 +1037,19 @@
         .meta-cell {
           flex: 0 0 100%;
         }
-        .meta-clock-row,
+     
         .meta-email-row {
-          padding: 0.5rem 0rem;
+          padding: 0.5rem 0;
+        }
+        .email-addr {
+          font-size: 0.65rem;
+          white-space: normal;
         }
       }
 
       /* MOBILE ≤500px */
       @media (max-width: 500px) {
         .layout {
-          border: none;
           gap: 1px;
         }
         .topbar-c .name {
@@ -1109,6 +1102,9 @@
         }
         .meta-row {
           flex: none;
+        }
+        .email-addr {
+          font-size: 0.62rem;
         }
       }
     </style>
@@ -1313,7 +1309,6 @@
             <span>LinkedIn</span><i class="fa-brands fa-linkedin-in"></i>
           </a>
         </div>
-
         <div class="resume-cell cell">
           <div class="mono-label">Document</div>
           <a
@@ -1323,10 +1318,7 @@
             >Download CV ↗</a
           >
         </div>
-
-        <!-- meta-cell now holds clock + email + the four data rows, all in one flex box -->
         <div class="meta-cell cell">
-          <!-- CLOCK ROW -->
           <div class="meta-clock-row">
             <div>
               <div class="mono-label" style="margin-bottom: 0.2rem">
@@ -1336,16 +1328,12 @@
             </div>
             <span class="clock-tz">IST<br />UTC+5:30</span>
           </div>
-
-          <!-- EMAIL ROW -->
           <div class="meta-email-row">
             <span class="email-lbl">Contact</span>
             <a class="email-addr" href="mailto:anujsharma135790@gmail.com"
               >anujsharma135790@gmail.com</a
             >
           </div>
-
-          <!-- DATA ROWS -->
           <div class="meta-row">
             <span class="meta-k">Status</span>
             <span class="meta-v"><span class="avail-dot"></span>Open</span>
@@ -1366,12 +1354,7 @@
       </aside>
     </div>
 
-    <script
-      data-cfasync="false"
-      src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"
-    ></script>
     <script>
-      /* FLIP COUNTER */
       const counterEl = document.getElementById("counter"),
         TOTAL = 6;
       const allDigits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
@@ -1409,7 +1392,6 @@
       }
       updateCounter(0);
 
-      /* LETTER REVEAL */
       function wrapLetters(el) {
         const nodes = Array.from(el.childNodes);
         el.innerHTML = "";
@@ -1441,7 +1423,6 @@
         });
       }
 
-      /* CAROUSEL */
       const slides = document.querySelectorAll(".slide"),
         thumbs = document.querySelectorAll(".thumb");
       const prevBtn = document.querySelector(".prev"),
@@ -1528,7 +1509,6 @@
           }
         });
 
-      /* PARTICLES */
       function spawnParticles(el, count = 10) {
         const rect = el.getBoundingClientRect();
         const cx = rect.left + rect.width / 2,
@@ -1548,7 +1528,6 @@
         }
       }
 
-      /* TAG BOUNCE */
       document.querySelectorAll(".tag").forEach((tag) => {
         tag.addEventListener("click", () => {
           tag.classList.remove("bouncing");
@@ -1563,7 +1542,6 @@
         });
       });
 
-      /* NAME SCRAMBLE */
       const nameEl = document.getElementById("name-el"),
         originalName = "Anuj Sharma",
         chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%&*<>?";
@@ -1591,7 +1569,6 @@
         }, 40);
       });
 
-      /* TYPEWRITER */
       const aboutP = document.getElementById("about-p"),
         fullText = aboutP.textContent.trim();
       aboutP.textContent = "";
@@ -1611,7 +1588,6 @@
       }
       setTimeout(typeNext, 800);
 
-      /* PHOTO 3D TILT */
       const photoCell = document.querySelector(".photo-cell");
       photoCell.addEventListener("mousemove", (e) => {
         const r = photoCell.getBoundingClientRect();
@@ -1632,7 +1608,6 @@
         photoCell.style.transition = "transform 0.1s ease";
       });
 
-      /* MOUSE TRAIL */
       let lastTrail = 0;
       document.addEventListener("mousemove", (e) => {
         const now = Date.now();
@@ -1646,7 +1621,6 @@
         d.addEventListener("animationend", () => d.remove(), { once: true });
       });
 
-      /* META TICK */
       document.querySelectorAll(".meta-v").forEach((v, i) => {
         setTimeout(
           () => {
@@ -1661,7 +1635,6 @@
         );
       });
 
-      /* LIVE CLOCK */
       const clockEl = document.getElementById("live-clock");
       function updateClock() {
         const now = new Date();
@@ -1673,7 +1646,6 @@
       updateClock();
       setInterval(updateClock, 1000);
 
-      /* KONAMI */
       const KONAMI = [
         "ArrowUp",
         "ArrowUp",
