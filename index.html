@@ -4,189 +4,949 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Anuj Sharma · Front-End Developer</title>
-    <style></style>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
       crossorigin="anonymous"
-      referrerpolicy="no-referrer"
     />
-  </head>
+    <style>
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
+      :root {
+        --bg: #111110;
+        --surface: #191918;
+        --lift: #222220;
+        --border: #2e2e2b;
+        --border-hi: #3e3e3a;
+        --text: #d4d2cc;
+        --muted: #6b6b66;
+        --dim: #3a3a36;
+        --white: #eeecea;
+        --accent: #c8c5bc;
+      }
+
+      html {
+        font-size: 15px;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "DM Mono", monospace;
+        font-weight: 300;
+        height: 100dvh;
+        overflow: hidden;
+        cursor: default;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 9999;
+        opacity: 0.035;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        background-size: 180px;
+      }
+
+      .layout {
+        max-width: 1200px;
+        margin: 0 auto;
+        height: 100dvh;
+        min-height: 600px;
+        display: grid;
+        grid-template-columns: 260px 1fr 200px;
+        grid-template-rows: 64px 1fr;
+        gap: 1px;
+        background: var(--border);
+        border: 1px solid var(--border);
+        animation: fadeIn 0.6s ease both;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .cell {
+        background: var(--bg);
+        overflow: hidden;
+        position: relative;
+      }
+
+      /* TOPBAR */
+      .topbar {
+        grid-column: 1 / -1;
+        background: var(--surface);
+        display: grid;
+        grid-template-columns: 260px 1fr 200px;
+        gap: 1px;
+      }
+      .topbar-l,
+      .topbar-c,
+      .topbar-r {
+        background: var(--surface);
+        display: flex;
+        align-items: center;
+        padding: 0 1.2rem;
+      }
+      .topbar-l {
+        font-size: 0.72rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .topbar-c {
+        gap: 1rem;
+      }
+      .topbar-c .name {
+        font-family: "DM Serif Display", serif;
+        font-size: 1.4rem;
+        font-style: italic;
+        color: var(--white);
+      }
+      .topbar-c .pipe {
+        color: var(--dim);
+        font-size: 1.1rem;
+      }
+      .topbar-c .role {
+        font-size: 0.72rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .topbar-r {
+        justify-content: flex-end;
+        gap: 1.4rem;
+      }
+      .topbar-r a {
+        font-size: 0.72rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+        transition: color 0.2s;
+      }
+      .topbar-r a:hover {
+        color: var(--white);
+      }
+
+      /* LEFT */
+      .panel-left {
+        grid-row: 2;
+        grid-column: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+      }
+      .photo-cell {
+        flex: 0 0 auto;
+        position: relative;
+        overflow: hidden;
+      }
+      .photo-cell img {
+        width: 100%;
+        display: block;
+        object-fit: cover;
+        aspect-ratio: 4/5;
+        filter: none;
+        transition: transform 0.8s ease;
+      }
+      .photo-cell:hover img {
+        transform: scale(1.025);
+      }
+      .photo-cell::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+          to bottom,
+          transparent,
+          transparent 3px,
+          rgba(0, 0, 0, 0.08) 3px,
+          rgba(0, 0, 0, 0.08) 4px
+        );
+        pointer-events: none;
+      }
+      .photo-tag {
+        position: absolute;
+        bottom: 0.7rem;
+        right: 0.7rem;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        padding: 0.25rem 0.5rem;
+        font-size: 0.55rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .about-cell {
+        flex: 1 1 auto;
+        background: var(--surface);
+        padding: 1.4rem 1.3rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.9rem;
+      }
+      .mono-label {
+        font-size: 0.7rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .about-cell p {
+        font-size: 0.88rem;
+        line-height: 1.65;
+        color: var(--text);
+        font-weight: 300;
+      }
+      .stack-cell {
+        background: var(--surface);
+        padding: 1.1rem 1.3rem;
+      }
+      .stack-tags {
+        margin-top: 0.7rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+      .tag {
+        font-size: 0.72rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 0.35rem 0.65rem;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        transition:
+          border-color 0.2s,
+          color 0.2s,
+          background 0.2s;
+        cursor: default;
+      }
+      .tag:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: rgba(200, 197, 188, 0.04);
+      }
+
+      /* CENTER */
+      .panel-center {
+        grid-row: 2;
+        grid-column: 2;
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+      }
+      .proj-header {
+        background: var(--surface);
+        padding: 0 1.6rem;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-shrink: 0;
+      }
+      .proj-counter {
+        font-size: 0.6rem;
+        letter-spacing: 0.1em;
+        color: var(--muted);
+      }
+      .carousel-region {
+        flex: 1 1 auto;
+        position: relative;
+        overflow: hidden;
+        background: var(--bg);
+      }
+
+      .slide {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.45s ease;
+      }
+      .slide.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .slide-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        filter: grayscale(100%) brightness(0.55);
+        transition:
+          filter 0.7s ease,
+          transform 0.8s ease;
+      }
+      .slide:hover .slide-img {
+        filter: grayscale(80%) brightness(0.65);
+        transform: scale(1.02);
+      }
+      .slide-vignette {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+          linear-gradient(
+            to top,
+            rgba(10, 10, 10, 0.92) 0%,
+            rgba(10, 10, 10, 0.1) 45%,
+            transparent 70%
+          ),
+          linear-gradient(to right, rgba(10, 10, 10, 0.3) 0%, transparent 40%);
+      }
+      .slide-text {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 2rem;
+      }
+      .slide-index {
+        font-size: 0.55rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 0.6rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+      .slide-index::before {
+        content: "";
+        display: inline-block;
+        width: 18px;
+        height: 1px;
+        background: var(--muted);
+      }
+      .slide-title {
+        font-family: "DM Serif Display", serif;
+        font-size: 2.4rem;
+        font-style: italic;
+        color: var(--white);
+        line-height: 1.05;
+        margin-bottom: 0.7rem;
+      }
+      .slide-desc {
+        font-size: 0.72rem;
+        font-weight: 300;
+        color: var(--muted);
+        max-width: 360px;
+        line-height: 1.55;
+        margin-bottom: 1.1rem;
+      }
+      .slide-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.58rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--muted);
+        border-bottom: 1px solid var(--dim);
+        padding-bottom: 2px;
+        transition:
+          color 0.2s,
+          border-color 0.2s;
+      }
+      .slide:hover .slide-cta {
+        color: var(--white);
+        border-color: var(--accent);
+      }
+
+      .controls-bar {
+        background: var(--surface);
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1.4rem;
+        flex-shrink: 0;
+      }
+      .thumbs {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+      .thumb {
+        height: 8px;
+        width: 20px;
+        border: none;
+        cursor: pointer;
+        background: var(--dim);
+        transition:
+          width 0.25s,
+          background 0.25s;
+      }
+      .thumb.active {
+        width: 36px;
+        background: var(--accent);
+      }
+      .nav-btns {
+        display: flex;
+        gap: 1px;
+      }
+      .nav-btns button {
+        width: 36px;
+        height: 36px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--muted);
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition:
+          background 0.15s,
+          color 0.15s,
+          border-color 0.15s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .nav-btns button:hover {
+        background: var(--lift);
+        border-color: var(--border-hi);
+        color: var(--white);
+      }
+
+      /* RIGHT */
+      .panel-right {
+        grid-row: 2;
+        grid-column: 3;
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+      }
+      .social-cell {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+      }
+      .social-link {
+        background: var(--surface);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.9rem 1.2rem;
+        font-size: 0.75rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+        transition:
+          background 0.15s,
+          color 0.15s,
+          padding-left 0.2s;
+      }
+      .social-link:hover {
+        background: var(--lift);
+        color: var(--white);
+        padding-left: 1.6rem;
+      }
+      .social-link i {
+        font-size: 0.95rem;
+      }
+      .resume-cell {
+        background: var(--surface);
+        padding: 1.2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
+      }
+      .resume-btn {
+        display: block;
+        border: 1px solid var(--border-hi);
+        background: transparent;
+        color: var(--text);
+        font-family: "DM Mono", monospace;
+        font-size: 0.75rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        padding: 0.9rem;
+        text-align: center;
+        transition:
+          background 0.15s,
+          color 0.15s,
+          border-color 0.15s;
+      }
+      .resume-btn:hover {
+        background: var(--lift);
+        border-color: var(--accent);
+        color: var(--white);
+      }
+      .meta-cell {
+        background: var(--surface);
+        flex: 1;
+        padding: 1.2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .meta-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        padding: 0.6rem 0;
+        border-bottom: 1px solid var(--border);
+        flex: 1;
+      }
+      .meta-row:last-child {
+        border-bottom: none;
+      }
+      .meta-k {
+        font-size: 0.68rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .meta-v {
+        font-size: 0.78rem;
+        letter-spacing: 0.06em;
+        color: var(--text);
+      }
+      .avail-dot {
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--accent);
+        margin-right: 5px;
+        vertical-align: middle;
+        animation: blink 3s ease-in-out infinite;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+
+      /* MOBILE ≤860px */
+      @media (max-width: 860px) {
+        body {
+          overflow: auto;
+          height: auto;
+        }
+
+        .layout {
+          grid-template-columns: 1fr;
+          grid-template-rows: 64px auto auto auto;
+          height: auto;
+          min-height: 100dvh;
+        }
+        .topbar {
+          grid-template-columns: 1fr;
+        }
+        .topbar-l {
+          display: none;
+        }
+
+        .panel-left,
+        .panel-center,
+        .panel-right {
+          grid-column: 1;
+          grid-row: auto;
+        }
+
+        /* Photo LEFT + About RIGHT, Stack full-width below */
+        .panel-left {
+          display: grid;
+          grid-template-columns: 140px 1fr;
+          grid-template-rows: auto auto;
+          gap: 1px;
+        }
+        .photo-cell {
+          grid-column: 1;
+          grid-row: 1 / 3; /* spans both rows so photo is tall */
+        }
+        .photo-cell img {
+          aspect-ratio: unset;
+          height: 100%;
+          width: 100%;
+          object-fit: cover;
+          object-position: top center;
+        }
+        .about-cell {
+          grid-column: 2;
+          grid-row: 1;
+        }
+        .stack-cell {
+          grid-column: 2;
+          grid-row: 2;
+        }
+
+        /* Projects */
+        .carousel-region {
+          min-height: 300px;
+        }
+
+        /* Right panel */
+        .panel-right {
+          flex-direction: row;
+          flex-wrap: wrap;
+        }
+        .social-cell {
+          flex: 1;
+          flex-direction: row;
+          gap: 1px;
+        }
+        .social-link {
+          flex: 1;
+          justify-content: center;
+        }
+        .resume-cell {
+          flex: 0 0 160px;
+        }
+        .meta-cell {
+          flex: 0 0 100%;
+          flex-direction: row;
+          flex-wrap: wrap;
+        }
+        .meta-row {
+          flex: 1 1 45%;
+          border-bottom: 1px solid var(--border);
+        }
+      }
+
+      /* MOBILE ≤500px */
+      @media (max-width: 500px) {
+        .layout {
+          border: none;
+          gap: 1px;
+        }
+
+        /* Topbar — just name, no role */
+        .topbar-c .name {
+          font-size: 1.1rem;
+        }
+        .topbar-c .role {
+          display: none;
+        }
+        .topbar-c .pipe {
+          display: none;
+        }
+        .topbar-r {
+          display: none;
+        }
+
+        /* Photo LEFT (narrower) + About RIGHT */
+        .panel-left {
+          grid-template-columns: 110px 1fr;
+        }
+
+        /* Carousel */
+        .carousel-region {
+          min-height: 260px;
+        }
+        .slide-title {
+          font-size: 1.5rem;
+        }
+        .slide-desc {
+          font-size: 0.7rem;
+        }
+        .slide-text {
+          padding: 1.2rem;
+        }
+
+        /* Right panel: full column */
+        .panel-right {
+          flex-direction: column;
+        }
+        .social-cell {
+          flex-direction: row;
+          gap: 1px;
+        }
+        .social-link {
+          flex: 1;
+          flex-direction: column;
+          align-items: center;
+          gap: 0.4rem;
+          padding: 0.9rem 0.6rem;
+          font-size: 0.7rem;
+        }
+        .resume-cell {
+          flex: 0 0 auto;
+        }
+        .meta-cell {
+          flex: 0 0 auto;
+          flex-direction: column;
+        }
+        .meta-row {
+          flex: none;
+        }
+      }
+    </style>
+  </head>
   <body>
-    <main class="grid-main">
-      <!-- LEFT COLUMN -->
-      <section class="column column-left">
-        <div class="grid-box box-photo">
+    <div class="layout">
+      <header class="topbar">
+        <div class="topbar-l">Portfolio · 2025</div>
+        <div class="topbar-c">
+          <span class="name">Anuj Sharma</span>
+          <span class="pipe">/</span>
+          <span class="role">MERN-Stack Developer</span>
+        </div>
+        <div class="topbar-r">
+          <!-- <a href="https://github.com/anuj-ng" target="_blank">Github</a> -->
+          <!-- <a href="https://www.linkedin.com/in/anuj-sharma-a25912235/" target="_blank">LinkedIn</a> -->
+          <!-- <a href="https://drive.google.com/file/d/16ETWqOzxHuh79u6SgeUVkX8XUznlH032/view?usp=drivesdk" target="_blank">CV ↗</a> -->
+        </div>
+      </header>
+
+      <aside class="panel-left">
+        <div class="photo-cell cell">
           <img
             src="ChatGPT Image Jan 24, 2026, 03_44_30 PM.png"
             alt="Anuj Sharma"
           />
+          <div class="photo-tag">Delhi, IN</div>
         </div>
-
-        <div class="grid-box box-name">
-          <h1>Anuj Sharma</h1>
-          <p>Front-End Developer</p>
-        </div>
-
-        <div class="grid-box box-about">
-          <h2>About</h2>
+        <div class="about-cell cell">
+          <div class="mono-label">Profile</div>
           <p>
             Self-taught front-end developer inspired by Swiss design. Focused on
             clarity, structure, and product thinking.
           </p>
         </div>
-      </section>
-
-      <!-- CENTER COLUMN -->
-      <section class="column column-center">
-        <div class="grid-box box-projects full-height">
-          <h2>Projects</h2>
-
-          <!-- NAV -->
-          <div class="project-nav">
-            <button class="prev">←</button>
-            <button class="next">→</button>
+        <div class="stack-cell cell">
+          <div class="mono-label">Stack</div>
+          <div class="stack-tags">
+            <span class="tag">HTML</span>
+            <span class="tag">CSS</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">React</span>
+            <span class="tag">Express</span>
+            <span class="tag">MongoDB</span>
+            <span class="tag">MERN</span>
+            <span class="tag">Git</span>
           </div>
+        </div>
+      </aside>
 
-          <!-- CAROUSEL -->
-          <div class="carousel">
-            <a class="slide active" href="https://vasuist.com" target="_blank">
-              <div class="project-text">
-                <h3>Infosec Compliance Website</h3>
-                <p>
-                  Swiss-inspired static site simplifying compliance services.
-                </p>
-                <br />
-              </div>
-              <img src="image1.png" alt="" />
-            </a>
+      <main class="panel-center">
+        <div class="proj-header cell">
+          <span class="mono-label">Selected Work</span>
+          <span class="proj-counter" id="counter">01 — 04</span>
+        </div>
+        <div class="carousel-region cell">
+          <a class="slide active" href="https://vasuist.com" target="_blank">
+            <img class="slide-img" src="image1.png" alt="Infosec Compliance" />
+            <div class="slide-vignette"></div>
+            <div class="slide-text">
+              <div class="slide-index">Project 01</div>
+              <h2 class="slide-title">Infosec<br />Compliance</h2>
+              <p class="slide-desc">
+                Swiss-inspired static site simplifying compliance services for
+                modern teams.
+              </p>
+              <span class="slide-cta">View Live ↗</span>
+            </div>
+          </a>
+          <a
+            class="slide"
+            href="https://chat-app-self-kappa-74.vercel.app/login"
+            target="_blank"
+          >
+            <img class="slide-img" src="image copy 2.png" alt="Chat Ap" />
+            <div class="slide-vignette"></div>
+            <div class="slide-text">
+              <div class="slide-index">Project 02</div>
+              <h2 class="slide-title">Chat<br />App</h2>
+              <p class="slide-desc">
+                A real-time chat application built with React, Node.js, Express,
+                and Socket.io. Features JWT authentication, live online status,
+                and instant messaging with a clean animated UI.
+              </p>
+              <span class="slide-cta">View Live ↗</span>
+            </div>
+          </a>
 
-            <a
-              class="slide"
-              href="https://anuj-ng.github.io/covid/"
-              target="_blank"
-            >
-              <div class="project-text">
-                <h3>COVID-19 Dashboard</h3>
-                <p>React dashboard visualizing India’s COVID data.</p>
-                <br />
-              </div>
+          <a
+            class="slide"
+            href="https://anuj-ng.github.io/covid/"
+            target="_blank"
+          >
+            <img
+              class="slide-img"
+              src="Screenshot (6).png"
+              alt="COVID-19 Dashboard"
+            />
+            <div class="slide-vignette"></div>
+            <div class="slide-text">
+              <div class="slide-index">Project 03</div>
+              <h2 class="slide-title">COVID-19<br />Dashboard</h2>
+              <p class="slide-desc">
+                React dashboard visualizing India's COVID-19 data with live
+                charts and maps.
+              </p>
+              <span class="slide-cta">View Live ↗</span>
+            </div>
+          </a>
 
-              <img src="Screenshot (6).png" alt="" />
-            </a>
+          <a
+            class="slide"
+            href="https://anuj-ng.github.io/taskassignment"
+            target="_blank"
+          >
+            <img class="slide-img" src="image copy.png" alt="ERP Task System" />
+            <div class="slide-vignette"></div>
+            <div class="slide-text">
+              <div class="slide-index">Project 04</div>
+              <h2 class="slide-title">ERP Task<br />System</h2>
+              <p class="slide-desc">
+                Admin task assignment tool with Local Storage persistence for
+                small teams.
+              </p>
+              <span class="slide-cta">View Live ↗</span>
+            </div>
+          </a>
+          <a
+            class="slide"
+            href="https://bookstore-crud-lake.vercel.app/"
+            target="_blank"
+          >
+            <img class="slide-img" src="image copy 3.png" alt="Book Store" />
+            <div class="slide-vignette"></div>
+            <div class="slide-text">
+              <div class="slide-index">Project 05</div>
+              <h2 class="slide-title">CRUD<br />Bookstore</h2>
+              <p class="slide-desc">
+                A lightweight CRUD-based Book Management System built to manage
+                a book inventory. Users can add books with details including
+                title, author, selling price, and publish date, and remove them
+                as needed. Features a clean tabular UI for easy readability.
+              </p>
+              <span class="slide-cta">View Live ↗</span>
+            </div>
+          </a>
 
-            <a
-              class="slide"
-              href="https://anuj-ng.github.io/taskassignment"
-              target="_blank"
-            >
-              <div class="project-text">
-                <h3>ERP Task System</h3>
-                <p>
-                  Let's you add task to employees as an admin. The data is
-                  stored in Local Storage/
-                </p>
-                <br />
-              </div>
-              <img src="image copy.png" alt="" />
-            </a>
-
-            <a
-              class="slide"
-              href="https://anuj-ng.github.io/weatherapp/"
-              target="_blank"
-            >
-              <div class="project-text">
-                <h3>Weather App</h3>
-                <p>A Simple Weather App</p>
-                <br />
-              </div>
-              <img src="image.png" alt="" />
-            </a>
-
-            <!-- <a class="slide" href="" target="_blank">
-          <div class="project-text">
-            <h3>Personal Portfolio</h3>
-            <p>Editorial, Swiss-inspired one-page portfolio.</p>
-          </div>
-          <img src="project5.jpg" alt="">
-        </a> -->
-          </div>
-
-          <!-- THUMBS -->
+          <a
+            class="slide"
+            href="https://anuj-ng.github.io/weatherapp/"
+            target="_blank"
+          >
+            <img class="slide-img" src="image.png" alt="Weather App" />
+            <div class="slide-vignette"></div>
+            <div class="slide-text">
+              <div class="slide-index">Project 06</div>
+              <h2 class="slide-title">Weather<br />App</h2>
+              <p class="slide-desc">
+                Minimal weather app with live API data, clean UI, and location
+                search.
+              </p>
+              <span class="slide-cta">View Live ↗</span>
+            </div>
+          </a>
+        </div>
+        <div class="controls-bar cell">
           <div class="thumbs">
             <button class="thumb active"></button>
             <button class="thumb"></button>
             <button class="thumb"></button>
             <button class="thumb"></button>
-            <!-- <button class="thumb"></button> -->
+            <button class="thumb"></button>
+            <button class="thumb"></button>
+          </div>
+          <div class="nav-btns">
+            <button class="prev">←</button>
+            <button class="next">→</button>
           </div>
         </div>
-      </section>
+      </main>
 
-      <!-- RIGHT COLUMN -->
-      <section class="column column-right">
-        <a
-          href="https://drive.google.com/file/d/16ETWqOzxHuh79u6SgeUVkX8XUznlH032/view?usp=drivesdk"
-          class="grid-box hover-skill resume"
-          >Resume</a
-        >
-        <div class="grid-box hover-skill">HTML</div>
-        <div class="grid-box hover-skill">CSS</div>
-        <div class="grid-box hover-skill">JavaScript</div>
-        <div class="grid-box hover-skill">React</div>
-        <div class="grid-box hover-skill">Express</div>
-        <div class="grid-box hover-skill">MongoDB</div>
-        <div class="grid-box hover-skill">MERN</div>
-
-        <!-- <a
-          class="grid-box hover-social"
-          href="https://github.com/yourname"
-          target="_blank"
-          >GitHub</a
-        >
-        <a
-          class="grid-box hover-social"
-          href="https://linkedin.com/in/yourname"
-          target="_blank"
-          >LinkedIn</a
-        >
-        <a
-          class="grid-box hover-social"
-          href="https://x.com/yourname"
-          target="_blank"
-          >X</a
-        > -->
-
-        <a
-          class="grid-box hover-social"
-          href="https://github.com/anuj-ng"
-          target="_blank"
-        >
-          <i class="fa-brands fa-github"></i>
-        </a>
-
-        <a
-          class="grid-box hover-social"
-          href="https://www.linkedin.com/in/anuj-sharma-a25912235/"
-          target="_blank"
-        >
-          <i class="fa-brands fa-linkedin-in"></i>
-        </a>
-
-        <!-- <a
-          class="grid-box hover-social"
-          href="https://x.com/yourname"
-          target="_blank"
-        >
-          <i class="fa-brands fa-x-twitter"></i>
-        </a> -->
-      </section>
-    </main>
-
-    <script src="script.js"></script>
+      <aside class="panel-right">
+        <div class="social-cell">
+          <a
+            class="social-link cell"
+            href="https://github.com/anuj-ng"
+            target="_blank"
+          >
+            <span>GitHub</span>
+            <i class="fa-brands fa-github"></i>
+          </a>
+          <a
+            class="social-link cell"
+            href="https://www.linkedin.com/in/anuj-sharma-a25912235/"
+            target="_blank"
+          >
+            <span>LinkedIn</span>
+            <i class="fa-brands fa-linkedin-in"></i>
+          </a>
+        </div>
+        <div class="resume-cell cell">
+          <div class="mono-label">Document</div>
+          <a
+            class="resume-btn"
+            href="https://drive.google.com/file/d/16ETWqOzxHuh79u6SgeUVkX8XUznlH032/view?usp=drivesdk"
+            target="_blank"
+            >Download CV ↗</a
+          >
+        </div>
+        <div class="meta-cell cell">
+          <div class="meta-row">
+            <span class="meta-k">Status</span>
+            <span class="meta-v"><span class="avail-dot"></span>Open</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-k">Focus</span>
+            <span class="meta-v">MERN</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-k">Base</span>
+            <span class="meta-v">Delhi</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-k">Works</span>
+            <span class="meta-v">06</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+    <script>
+      const slides = document.querySelectorAll(".slide");
+      const thumbs = document.querySelectorAll(".thumb");
+      const counter = document.getElementById("counter");
+      const prev = document.querySelector(".prev");
+      const next = document.querySelector(".next");
+      let idx = 0;
+      const pad = (n) => String(n + 1).padStart(2, "0");
+      function go(i) {
+        slides[idx].classList.remove("active");
+        thumbs[idx].classList.remove("active");
+        idx = (i + slides.length) % slides.length;
+        slides[idx].classList.add("active");
+        thumbs[idx].classList.add("active");
+        counter.textContent = `${pad(idx)} — ${pad(slides.length - 1)}`;
+      }
+      prev.onclick = () => go(idx - 1);
+      next.onclick = () => go(idx + 1);
+      thumbs.forEach((t, i) => (t.onclick = () => go(i)));
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowLeft") go(idx - 1);
+        if (e.key === "ArrowRight") go(idx + 1);
+      });
+    </script>
   </body>
 </html>
